@@ -6,6 +6,7 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
 
+
 public class App {
 
 private static final String API_BASE_URL = "http://localhost:8080/";
@@ -66,9 +67,17 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			}
 		}
 	}
+	
+	/*********************************************
+	 * Most of the other methods already have functionality
+	 * 
+	 * Frank suggest we work on this first
+	 * 
+	 * As an authenticated user of the system, I need to be able to see my Account Balance.
+	 *********************************************/
 
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
