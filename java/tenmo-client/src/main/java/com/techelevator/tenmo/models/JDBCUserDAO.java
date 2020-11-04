@@ -1,5 +1,5 @@
 package com.techelevator.tenmo.models;
 
-public class JDBCUserDAO {
+public class JDBCUserDAO implements UserDAO {
 
 }
