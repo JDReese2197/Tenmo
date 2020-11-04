@@ -20,7 +20,7 @@ public class JDBCUserDAO implements UserDAO {
 	@Override
 	public List<User> getAllUsers() {
 		List<User> users = new ArrayList<>();
-		String query = "SELECT user_id, username FROM users";
+		String query = "SELECT * FROM users";
 		
 		SqlRowSet results = jdbcTemplate.queryForRowSet(query);
 		while(results.next()) {
@@ -35,8 +35,8 @@ public class JDBCUserDAO implements UserDAO {
 	private User mapRowToUser(SqlRowSet results) {
 		User user = new User();
 		user.setId(results.getLong("user_id"));
-		user.setPassword(results.getNString("password_hash"));
 		user.setUsername(results.getNString("username"));
+		user.setPassword(results.getNString("password_hash"));
 		return user;
 	}
 

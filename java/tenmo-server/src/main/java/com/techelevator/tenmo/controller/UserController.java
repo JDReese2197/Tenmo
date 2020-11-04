@@ -8,7 +8,9 @@ import java.util.List;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import com.techelevator.tenmo.model.JDBCUserDAO;
 import com.techelevator.tenmo.model.User;
@@ -17,7 +19,7 @@ import com.techelevator.tenmo.model.User;
 @RequestMapping(value = "users")
 public class UserController {
 	
-	private JDBCUserDAO userDao;
+private JDBCUserDAO userDao;
 	
 	public UserController(JDBCUserDAO dao) {
 		this.userDao = dao;
