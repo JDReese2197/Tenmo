@@ -60,4 +60,43 @@ public class JDBCTransferDAO implements TransferDAO {
 		Long id = jdbcTemplate.queryForObject(sqlCreateTransfer, Long.class, Transfer.getTransferId());
 		
 	}
+	
+	@Override
+	public List<Transfer> getAllTransfersByAccountId(int id) {
+		List<Transfer> transfers = new ArrayList<>();
+		String query = "SELECT * FROM transfers WHERE account_from IN(?) OR account_to IN(?)";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(query, id, id);
+		while(results.next()) {
+			Transfer transfer = mapRowToTransfer(results);
+			transfers.add(transfer);
+		}
+		return transfers;
+	}
+	
+	@Override
+	public List<Transfer> getTransfersByFromId(int id) {
+		List<Transfer> transfers = new ArrayList<>();
+		String query = "SELECT * FROM transfers WHERE account_from IN(?) OR account_to IN(?)";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(query, id, id);
+		while(results.next()) {
+			Transfer transfer = mapRowToTransfer(results);
+			transfers.add(transfer);
+		}
+		return transfers;
+	}
+	
+	@Override
+	public List<Transfer> getTransfersByToId(int id) {
+		List<Transfer> transfers = new ArrayList<>();
+		String query = "SELECT * FROM transfers WHERE account_from IN(?) OR account_to IN(?)";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(query, id, id);
+		while(results.next()) {
+			Transfer transfer = mapRowToTransfer(results);
+			transfers.add(transfer);
+		}
+		return transfers;
+	}
 }

@@ -92,7 +92,7 @@ public class JDBCAccountDAO  implements AccountDAO {
 	}
 
 
-
+	@Override
 	public Account getAccountByUserId(long id) {
 		String query = "SELECT * FROM accounts WHERE user_id = ?";
 		

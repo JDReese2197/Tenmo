@@ -21,6 +21,4 @@ public interface AccountDAO {
 	public boolean checkValidTransfer();
 
 	public List<Account> getAllAccounts();
-	
-
 }

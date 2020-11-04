@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface UserDAO {
 	
-	public List<User> getAllUsernames();
+	public List<User> getAllUsers();
 	
 	public User getUserById(Long id);
 	

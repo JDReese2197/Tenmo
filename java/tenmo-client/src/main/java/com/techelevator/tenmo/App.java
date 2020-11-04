@@ -2,6 +2,7 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.models.Account;
 import com.techelevator.tenmo.models.AuthenticatedUser;
+import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
@@ -37,7 +38,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticatedUser currentUser;
     private ConsoleService console;
     private AuthenticationService authenticationService;
-    private Account account;
+    private Account account;		
+	private RestTemplate apiCall = new RestTemplate();
     
     
 
@@ -94,8 +96,6 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		User user = currentUser.getUser();
 		System.out.println("View Current Balance");
 		
-		RestTemplate apiCall = new RestTemplate();
-		
 		Account accounts = apiCall.getForObject(API_BASE_URL + "accounts/" + user.getId(), Account.class);
 		// ResponseEntity<Account> responseEntity = apiCall.getForEntity(API_BASE_URL + "accounts", Account.class);
 		// double currentBalance =  (responseEntity.getBody().getBalance());
@@ -106,15 +106,17 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewTransferHistory() {
 		User user = currentUser.getUser();
+		Account account = new Account();
 		System.out.println("View transfer history");
 		
-		RestTemplate apiCall = new RestTemplate();
+		account = apiCall.getForObject(API_BASE_URL + "accounts/" + user.getId(), Account.class);
+		int accountId = account.getAccountId();
 		
-		Account transferHistory = apiCall.getForObject(API_BASE_URL + "transfers/" + user.getId(), Account.class);
-		// ResponseEntity<Account> responseEntity = apiCall.getForEntity(API_BASE_URL + "accounts", Account.class);
-		// double currentBalance =  (responseEntity.getBody().getBalance());
-		System.out.println(transferHistory);
+		ResponseEntity<Transfer[]> responseEntity = apiCall.getForEntity(API_BASE_URL + "transfers/accounts/" + accountId, Transfer[].class);
+		List<Transfer> currentTransfers = Arrays.asList(responseEntity.getBody());
 		
+		System.out.println("Transaction History: ");
+		printTransfers(currentTransfers);
 	}
 
 	private void viewPendingRequests() {
@@ -125,14 +127,34 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void sendBucks() {
 		User user = currentUser.getUser();
-		// TODO Auto-generated method stub
+
+		ResponseEntity<User[]> responseEntity = apiCall.getForEntity(API_BASE_URL + "users", User[].class);
+		List<User> users = Arrays.asList(responseEntity.getBody());
 		
+		System.out.println("Please select an user from the list below: ");
+		printUsers(users);
 	}
 
 	private void requestBucks() {
 		User user = currentUser.getUser();
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void printTransfers(List<Transfer> transfers) {
+		if(transfers.size() > 0) {
+			for(Transfer aTransfer : transfers) {
+				System.out.println(aTransfer);
+			}
+		}
+	}
+	
+	private void printUsers(List<User> users) {
+		if(users.size() > 0) {
+			for(User anUser : users) {
+				System.out.println(users.indexOf(anUser) + ") " + anUser);
+			}
+		}
 	}
 	
 	private void exitProgram() {

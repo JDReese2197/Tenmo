@@ -18,7 +18,7 @@ public class JDBCUserDAO implements UserDAO {
 	}
 	
 	@Override
-	public List<User> getAllUsernames() {
+	public List<User> getAllUsers() {
 		List<User> users = new ArrayList<>();
 		String query = "SELECT user_id, username FROM users";
 		
@@ -37,7 +37,6 @@ public class JDBCUserDAO implements UserDAO {
 		user.setId(results.getLong("user_id"));
 		user.setPassword(results.getNString("password_hash"));
 		user.setUsername(results.getNString("username"));
-		user.setActivated(true);
 		return user;
 	}
 
