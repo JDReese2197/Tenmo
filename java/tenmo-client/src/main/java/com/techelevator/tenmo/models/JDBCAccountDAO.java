@@ -1,9 +1,6 @@
 package com.techelevator.tenmo.models;
 
-
-
-
-
+import java.util.List;
 
 public class JDBCAccountDAO  implements AccountDAO {
 
