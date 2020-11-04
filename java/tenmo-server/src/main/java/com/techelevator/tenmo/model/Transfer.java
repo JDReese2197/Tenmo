@@ -1,4 +1,4 @@
-package com.techelevator.tenmo.models;
+package com.techelevator.tenmo.model;
 
 public class Transfer {
 	private int transferId;

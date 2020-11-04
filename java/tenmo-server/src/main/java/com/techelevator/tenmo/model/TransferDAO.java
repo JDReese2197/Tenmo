@@ -1,11 +1,11 @@
-package com.techelevator.tenmo.models;
+package com.techelevator.tenmo.model;
 
 import java.util.List;
 
 public interface TransferDAO {
 	
 	public List<Transfer> getAllTransfers();
-	public List<Transfer> getTransferById(int id);
+	public Transfer getTransferById(int id);
 	
 
 }
