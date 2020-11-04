@@ -7,7 +7,9 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JDBCTransferDAO implements TransferDAO {
 
 	private JdbcTemplate jdbcTemplate;
@@ -50,5 +52,12 @@ public class JDBCTransferDAO implements TransferDAO {
 		transfer.setTransferStatusId(results.getInt("transfer_status_id"));
 		transfer.setTransferTypeId(results.getInt("transfer_type_id"));
 		return transfer;
+	}
+
+	@Override
+	public void sendTransfer(Transfer newTransfer) {
+		String sqlCreateTransfer = "INSERT INTO transfers (name) VALUES (?) RETURNING transfer_id";
+		Long id = jdbcTemplate.queryForObject(sqlCreateTransfer, Long.class, Transfer.getTransferId());
+		
 	}
 }

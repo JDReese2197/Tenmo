@@ -7,5 +7,8 @@ public interface TransferDAO {
 	public List<Transfer> getAllTransfers();
 	public Transfer getTransferById(int id);
 	
+	public void sendTransfer(Transfer newTransfer);
+	
+	
 
 }

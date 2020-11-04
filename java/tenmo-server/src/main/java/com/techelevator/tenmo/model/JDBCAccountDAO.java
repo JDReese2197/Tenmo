@@ -25,6 +25,7 @@ public class JDBCAccountDAO  implements AccountDAO {
 	 *********************************************/
 
 
+	@Override
 	public List<Account> getAllAccounts() {
 		List<Account> accounts = new ArrayList<Account>();
 		String query = "SELECT account_id, balance, user_id FROM accounts";
@@ -65,14 +66,14 @@ public class JDBCAccountDAO  implements AccountDAO {
 
 
 	@Override
-	public double addBalance() {
+	public double addBalance(int id, double amount) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 
 	@Override
-	public double subtractBalance() {
+	public double subtractBalance(int id, double amount) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -90,6 +91,20 @@ public class JDBCAccountDAO  implements AccountDAO {
 		account.setBalance(result.getDouble("balance"));
 		account.setUserId(result.getInt("user_id"));
 		return account;
+	}
+
+
+
+	public Account getAccountByUserId(long id) {
+		String query = "SELECT * FROM account WHERE user_id = ?";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(query, id);
+		if(results.next()) {
+			return mapRowToAccount(results);
+		}
+		System.out.println("Account not found");
+		return null;
+		
 	}
 	
 	

@@ -1,7 +1,7 @@
 package com.techelevator.tenmo.model;
 
 public class Transfer {
-	private int transferId;
+	private static int transferId;
 	private int transferTypeId;
 	private int transferStatusId;
 	private int accountFrom;
@@ -12,7 +12,7 @@ public class Transfer {
 	
 	// transfer statuses, TODO create values for statuses
 	
-	protected int getTransferId() {
+	public static int getTransferId() {
 		return transferId;
 	}
 	
@@ -64,7 +64,9 @@ public class Transfer {
 		this.amount = amount;
 	}
 	
-	
+	public void newTransfer() {
+		
+	}
 	
 	
 	

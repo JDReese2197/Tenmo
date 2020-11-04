@@ -1,10 +1,20 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.models.Account;
 import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.naming.NameNotFoundException;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
 
 
 public class App {
@@ -26,6 +36,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticatedUser currentUser;
     private ConsoleService console;
     private AuthenticationService authenticationService;
+    
 
     public static void main(String[] args) {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
@@ -77,6 +88,14 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	 *********************************************/
 
 	private void viewCurrentBalance() {
+		System.out.println("View Current Balance");
+		
+		RestTemplate apiCall = new RestTemplate();
+		
+		Account account = apiCall.getForObject(API_BASE_URL + "accounts", Account.class);
+		// ResponseEntity<Account> responseEntity = apiCall.getForEntity(API_BASE_URL + "accounts", Account.class);
+		// double currentBalance =  (responseEntity.getBody().getBalance());
+		System.out.println(account);
 		
 		
 	}
