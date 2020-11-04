@@ -96,7 +96,7 @@ public class JDBCAccountDAO  implements AccountDAO {
 
 
 	public Account getAccountByUserId(long id) {
-		String query = "SELECT * FROM account WHERE user_id = ?";
+		String query = "SELECT * FROM accounts WHERE user_id = ?";
 		
 		SqlRowSet results = jdbcTemplate.queryForRowSet(query, id);
 		if(results.next()) {

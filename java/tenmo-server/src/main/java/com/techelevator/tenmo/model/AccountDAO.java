@@ -18,6 +18,7 @@ public interface AccountDAO {
 		
 	public double subtractBalance(int id, double amount);
 
+	public Account getAccountByUserId(long id);
 	
 	public boolean checkValidTransfer();
 

@@ -2,6 +2,7 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.models.Account;
 import com.techelevator.tenmo.models.AuthenticatedUser;
+import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
@@ -36,6 +37,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticatedUser currentUser;
     private ConsoleService console;
     private AuthenticationService authenticationService;
+    private Account account;
+    
     
 
     public static void main(String[] args) {
@@ -88,14 +91,15 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	 *********************************************/
 
 	private void viewCurrentBalance() {
+		User user = currentUser.getUser();
 		System.out.println("View Current Balance");
 		
 		RestTemplate apiCall = new RestTemplate();
 		
-		Account account = apiCall.getForObject(API_BASE_URL + "accounts", Account.class);
+		Account accounts = apiCall.getForObject(API_BASE_URL + "accounts/" + user.getId(), Account.class);
 		// ResponseEntity<Account> responseEntity = apiCall.getForEntity(API_BASE_URL + "accounts", Account.class);
 		// double currentBalance =  (responseEntity.getBody().getBalance());
-		System.out.println(account);
+		System.out.println(accounts);
 		
 		
 	}

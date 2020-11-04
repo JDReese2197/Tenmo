@@ -32,13 +32,13 @@ public class AccountController {
     @RequestMapping(value = "accounts", method = RequestMethod.GET)
     public List<Account> listAllAccounts() {
     	List<Account> account = accountDAO.getAllAccounts();
+    	
     	return account;
     }
     
     @RequestMapping(value = "accounts/{id}", method = RequestMethod.GET)
     public Account getAccountByUserId(@PathVariable long id) {
     	Account account = accountDAO.getAccountByUserId(id);
-    	
     	return account;
     	
     }
