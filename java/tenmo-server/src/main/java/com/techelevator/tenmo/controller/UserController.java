@@ -1,8 +1,11 @@
 package com.techelevator.tenmo.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +25,21 @@ public class UserController {
 	
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public List<User> getAllUsers() {
+		logAPICall("Getting all users");
 		List<User> users = userDao.getAllUsers();
 		return users;
 	}
+	
+	@RequestMapping(value = "{id}", method = RequestMethod.GET)
+	public User getUserById(@PathVariable Long id) {
+		logAPICall("Getting users by id of: " + id);
+		return userDao.getUserById(id);
+	}
+	
+	private void logAPICall(String message) {
+		LocalDateTime now = LocalDateTime.now();
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss.A");
+	    String timeNow = now.format(formatter);
+	    System.out.println(timeNow + ": " + message);
+	}	
 }
