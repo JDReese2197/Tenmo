@@ -45,6 +45,11 @@ public class JDBCAccountDAO  implements AccountDAO {
 	}
 
 
+	/*********************************************
+	 * As an authenticated user of the system,
+	 *  I need to be able to see my Account Balance.
+	 *********************************************/
+	
 	@Override
 	public Account getAccountById(int id) {
 		String query = "SELECT * FROM account WHERE account_id = ?";
@@ -54,13 +59,6 @@ public class JDBCAccountDAO  implements AccountDAO {
 			return mapRowToAccount(results);
 		}
 		System.out.println("Account not found");
-		return null;
-	}
-
-
-	@Override
-	public Account getAccountId(int id) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

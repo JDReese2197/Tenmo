@@ -12,8 +12,6 @@ public interface AccountDAO {
 	
 	public Account getAccountById(int id);
 	
-	public Account getAccountId(int id);
-	
 	public double addBalance(int id, double amount);
 		
 	public double subtractBalance(int id, double amount);

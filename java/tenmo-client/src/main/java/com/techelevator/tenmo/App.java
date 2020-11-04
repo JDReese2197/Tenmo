@@ -105,21 +105,32 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
+		User user = currentUser.getUser();
+		System.out.println("View transfer history");
+		
+		RestTemplate apiCall = new RestTemplate();
+		
+		Account transferHistory = apiCall.getForObject(API_BASE_URL + "transfers/" + user.getId(), Account.class);
+		// ResponseEntity<Account> responseEntity = apiCall.getForEntity(API_BASE_URL + "accounts", Account.class);
+		// double currentBalance =  (responseEntity.getBody().getBalance());
+		System.out.println(transferHistory);
 		
 	}
 
 	private void viewPendingRequests() {
+		User user = currentUser.getUser();
 		// TODO Auto-generated method stub
 		
 	}
 
 	private void sendBucks() {
+		User user = currentUser.getUser();
 		// TODO Auto-generated method stub
 		
 	}
 
 	private void requestBucks() {
+		User user = currentUser.getUser();
 		// TODO Auto-generated method stub
 		
 	}
