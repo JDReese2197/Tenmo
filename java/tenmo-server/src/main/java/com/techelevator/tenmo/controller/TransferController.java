@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.techelevator.tenmo.exceptions.BrokeUserException;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.JDBCAccountDAO;
 import com.techelevator.tenmo.model.JDBCTransferDAO;
@@ -67,11 +68,15 @@ public class TransferController {
     
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "transfers", consumes = "application/json", method = RequestMethod.POST)
-    public Transfer createTransfer(@RequestBody Transfer transfer) {
+    public Transfer createTransfer(@RequestBody Transfer transfer) throws BrokeUserException {
     	logAPICall("Sending $" + transfer.getAmount() + 
 			" from " + transfer.getAccountFrom() + " to " + transfer.getAccountTo());
     	Transfer transfers =  transferDAO.createTransfer(transfer);
-    	updateAccountBalance(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+		try {
+			updateAccountBalance(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+		} catch(BrokeUserException ex) {
+			System.out.println(ex);
+		}
     	return transfers;
     }
     
@@ -84,9 +89,15 @@ public class TransferController {
     
     
     @RequestMapping(method = RequestMethod.PUT)
-    private void updateAccountBalance(int accountFrom, int accountTo, double amount) {
-    	accountDAO.addBalance(accountTo, amount);
-    	accountDAO.subtractBalance(accountFrom, amount);
+    private void updateAccountBalance(int accountFrom, int accountTo, double amount) throws BrokeUserException {
+    	if(accountDAO.checkValidTransfer(accountFrom, amount)) {
+        	logAPICall("Updating balances");
+    		accountDAO.addBalance(accountTo, amount);
+    		accountDAO.subtractBalance(accountFrom, amount);
+    	}
+    	else {
+    		throw new BrokeUserException("Transfer amount was greater than account balance.");
+    	}
     }
     
     

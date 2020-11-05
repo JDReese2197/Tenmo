@@ -7,6 +7,7 @@ import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
+import com.techelevator.tenmo.services.BrokeUserException;
 import com.techelevator.view.ConsoleService;
 
 import java.util.Arrays;
@@ -14,6 +15,9 @@ import java.util.List;
 
 import javax.naming.NameNotFoundException;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -132,9 +136,6 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void sendBucks() {
 		User user = currentUser.getUser();
-		
-		\HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		ResponseEntity<User[]> responseEntity = apiCall.getForEntity(API_BASE_URL + "users", User[].class);
 		List<User> users = Arrays.asList(responseEntity.getBody());
@@ -143,22 +144,33 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		int userId = console.getUserInputInteger("Please select an user");
 		double money = Double.parseDouble((String)console.getUserInput("How much money would you like to send"));
 		
-		Transfer transfer = apiCall.getForObject(API_BASE_URL + "transfers/" + user.getId(), Transfer.class);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		
-		
+		// Create a transfer object to pass through the entity used in the API call
+		Transfer entityTransfer = new Transfer();
 		// TODO implement try - catch
+		if(money > apiCall.getForObject(API_BASE_URL + "accounts/" + user.getId(), Account.class).getBalance()) {
+			System.out.println("Money was greater than balance.  Send a lower amount next time?");
+			// Create the transfer and set status to rejected since the user is poor
+			entityTransfer = initTransfer(userId, user.getId(), money, 3, 2);
+		}
+		else {
+			// Create the transfer and set status to accepted since the user has enough money
+			entityTransfer = initTransfer(userId, user.getId(), money, 2, 2);
+		}
 		
-		
+		HttpEntity anEntity = new HttpEntity(entityTransfer, headers);
+		Transfer transfer = apiCall.postForObject(API_BASE_URL + "transfers", anEntity, Transfer.class);
 	}
 	
-	private Transfer initTransfer(long toId, long fromId, double amount) {
+	private Transfer initTransfer(long toId, long fromId, double amount, int status, int type) {
 		Transfer transfer = new Transfer();
 		transfer.setAccountFrom((int)fromId);
 		transfer.setAccountTo((int)toId);
 		transfer.setAmount(amount);
-		transfer.setTransferId(5);
-		transfer.setTransferStatusId(2);
-		transfer.setTransferTypeId(2);
+		transfer.setTransferStatusId(status);
+		transfer.setTransferTypeId(type);
 		return transfer;
 	}
 
@@ -188,10 +200,6 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		else {
 			System.out.println("No users found");
 		}
-	}
-	
-	private void handleTransfer(int id, int toId, double amount) {
-		
 	}
 	
 	private void exitProgram() {
