@@ -133,6 +133,12 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		// TODO Auto-generated method stub
 		
 	}
+	
+	/*********************************************
+   	 * Method to send money
+   	 * make sure the user id is valid
+   	 * make sure the amt is valid
+   	 *********************************************/
 
 	private void sendBucks() {
 		User user = currentUser.getUser();
@@ -140,9 +146,29 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		ResponseEntity<User[]> responseEntity = apiCall.getForEntity(API_BASE_URL + "users", User[].class);
 		List<User> users = Arrays.asList(responseEntity.getBody());
 		
+		// Print a list of users and ask the user to select one
 		printUsers(users);
 		int userId = console.getUserInputInteger("Please select an user");
+
+		// Check to see the user hasn't entered the account number 0
+		if (userId == 0) {
+			return;
+		}
+		
+		// if the user picked a valid account let them transfer the money
+		while (userId <= 0 || userId > users.size()) {
+			
+			System.out.println("The id entered wasn't valid try again");
+			userId = console.getUserInputInteger("Please select an user");
+		}
+		
 		double money = Double.parseDouble((String)console.getUserInput("How much money would you like to send"));
+		
+		while (money <= 0 || userId > users.size()) {
+			
+			System.out.println("Do not enter a negetive amount of money to transfer!");
+			money = Double.parseDouble((String)console.getUserInput("How much money would you like to send"));
+		}
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -150,6 +176,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		// Create a transfer object to pass through the entity used in the API call
 		Transfer entityTransfer = new Transfer();
 		// TODO implement try - catch
+		
 		if(money > apiCall.getForObject(API_BASE_URL + "accounts/" + user.getId(), Account.class).getBalance()) {
 			System.out.println("Money was greater than balance.  Send a lower amount next time?");
 			// Create the transfer and set status to rejected since the user is poor
@@ -164,6 +191,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		Transfer transfer = apiCall.postForObject(API_BASE_URL + "transfers", anEntity, Transfer.class);
 	}
 	
+	/*********************************************
+   	 * Mehtod to initalize a transfer
+   	 *********************************************/
+	
 	private Transfer initTransfer(long toId, long fromId, double amount, int status, int type) {
 		Transfer transfer = new Transfer();
 		transfer.setAccountFrom((int)fromId);
@@ -173,6 +204,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		transfer.setTransferTypeId(type);
 		return transfer;
 	}
+	
+	/*********************************************
+   	 * Method to request buck (BONUS)
+   	 *********************************************/
 
 	private void requestBucks() {
 		User user = currentUser.getUser();
@@ -180,6 +215,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 		
 	}
+	
+	/*********************************************
+   	 * Method to print transfers in a readable format
+   	 *********************************************/
 	
 	private void printTransfers(List<Transfer> transfers) {
 		if(transfers.size() > 0) {
@@ -190,6 +229,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 		
 	}
+	
+	/*********************************************
+   	 * Method to print users in a readable format
+   	 *********************************************/
 	
 	private void printUsers(List<User> users) {
 		if(users.size() > 0) {
@@ -207,6 +250,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		System.exit(0);
 	}
 
+	
+	/*********************************************
+   	 * Methods below came with the project don't change!
+   	 *********************************************/
+	
 	private void registerAndLogin() {
 		while(!isAuthenticated()) {
 			String choice = (String)console.getChoiceFromOptions(LOGIN_MENU_OPTIONS);

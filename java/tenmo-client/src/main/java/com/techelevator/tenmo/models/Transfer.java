@@ -93,7 +93,7 @@ public class Transfer {
 			break;
 		}
 		
-		return "Transfer id: " + transferId + "\nTransfer Type: " + typeString + "\nTransfer Status id:" + s + "\nAccount from: "  + accountFrom + "\nAccount to: " + accountTo + "\nAmount: " + amount + "\n";
+		return "___________________________________________________\nTransfer id: " + transferId + "\nTransfer Type: " + typeString + "\nTransfer Status id: " + s + "\nAccount from: "  + accountFrom + "\nAccount to: " + accountTo + "\nAmount: " + amount + "\n___________________________________________________\n";
 	}
 	
 	
