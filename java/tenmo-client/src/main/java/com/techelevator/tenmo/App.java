@@ -146,36 +146,22 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		ResponseEntity<User[]> responseEntity = apiCall.getForEntity(API_BASE_URL + "users", User[].class);
 		List<User> users = Arrays.asList(responseEntity.getBody());
 		
-		// Print a list of users and ask the user to select one
-		printUsers(users);
-		int userId = console.getUserInputInteger("Please select an user");
-
-		// Check to see the user hasn't entered the account number 0
-		if (userId == 0) {
+		// Prompt user for user to transfer money to and return result
+		int userId = requestUserId(users);
+		// Exit method if user enters 0
+		if(userId == 0) {
+			System.out.println("Exiting User Selection");
 			return;
 		}
 		
-		// if the user picked a valid account let them transfer the money
-		while (userId <= 0 || userId > users.size()) {
-			
-			System.out.println("The id entered wasn't valid try again");
-			userId = console.getUserInputInteger("Please select an user");
-		}
-		
-		double money = Double.parseDouble((String)console.getUserInput("How much money would you like to send"));
-		
-		while (money <= 0 || userId > users.size()) {
-			
-			System.out.println("Do not enter a negetive amount of money to transfer!");
-			money = Double.parseDouble((String)console.getUserInput("How much money would you like to send"));
-		}
+		// Prompt user for money to be transfered and return result
+		double money = requestMoneyToSend();
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		
 		// Create a transfer object to pass through the entity used in the API call
 		Transfer entityTransfer = new Transfer();
-		// TODO implement try - catch
 		
 		if(money > apiCall.getForObject(API_BASE_URL + "accounts/" + user.getId(), Account.class).getBalance()) {
 			System.out.println("Money was greater than balance.  Send a lower amount next time?");
@@ -214,6 +200,38 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 		
 		
+	}
+	
+	/*********************************************
+   	 * Method to request an exist ID from a list of users
+   	 * Prompts for user input
+   	 * Repeats until a valid id, or 0 is entered
+   	 *********************************************/
+	
+	private int requestUserId(List<User> users) {
+		// Print a list of users and ask the user to select one
+		printUsers(users);
+		int userId = console.getUserInputInteger("Please select an user or 0 to exit");
+		// if the user picked a valid account let them transfer the money
+		while (userId < 0 || userId > users.size()) {
+			System.out.println("The id entered wasn't valid try again");
+			userId = console.getUserInputInteger("Please select an user");
+		}
+		return userId;
+	}
+	
+	/*********************************************
+   	 * Method to request an amount of money to be sent from user
+   	 * will repeat until user enters a positive value
+   	 *********************************************/
+	private double requestMoneyToSend() {
+		double money = Double.parseDouble((String)console.getUserInput("How much money would you like to send"));
+		
+		while (money <= 0) {
+			System.out.println("Do not enter a negetive amount of money to transfer!");
+			money = Double.parseDouble((String)console.getUserInput("How much money would you like to send"));
+		}
+		return money;
 	}
 	
 	/*********************************************
