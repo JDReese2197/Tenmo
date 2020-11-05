@@ -87,6 +87,7 @@ public class JDBCAccountDAO  implements AccountDAO {
 
 	@Override
 	public boolean checkValidTransfer(long id, double amount) {
+		
 		if(amount > getAccountBalance((int)id)) {
 			return false;
 		}

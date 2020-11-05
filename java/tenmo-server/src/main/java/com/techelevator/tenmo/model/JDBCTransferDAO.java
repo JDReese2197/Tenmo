@@ -56,6 +56,7 @@ public class JDBCTransferDAO implements TransferDAO {
 
 	@Override
 	public void sendTransfer(Transfer newTransfer) {
+		
 		String sqlCreateTransfer = "INSERT INTO transfers (name) VALUES (?) RETURNING transfer_id";
 		Long id = jdbcTemplate.queryForObject(sqlCreateTransfer, Long.class, Transfer.getTransferId());
 		

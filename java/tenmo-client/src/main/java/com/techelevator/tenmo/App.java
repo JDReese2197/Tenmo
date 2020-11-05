@@ -38,7 +38,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticatedUser currentUser;
     private ConsoleService console;
     private AuthenticationService authenticationService;
-    private Account account;		
+    private Account account;
 	private RestTemplate apiCall = new RestTemplate();
     
     
@@ -85,11 +85,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 	
 	/*********************************************
-	 * Most of the other methods already have functionality
 	 * 
-	 * Frank suggest we work on this first
+	 * As an authenticated user of the system, 
+	 * I need to be able to see my Account Balance.
 	 * 
-	 * As an authenticated user of the system, I need to be able to see my Account Balance.
 	 *********************************************/
 
 	private void viewCurrentBalance() {
@@ -103,6 +102,12 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 		
 	}
+	
+	/*********************************************
+   	 * method to view the transfer history 
+   	 * 
+   	 * used before sending or requesting a transfer 
+   	 *********************************************/
 
 	private void viewTransferHistory() {
 		User user = currentUser.getUser();
@@ -127,6 +132,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void sendBucks() {
 		User user = currentUser.getUser();
+		
+		\HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		ResponseEntity<User[]> responseEntity = apiCall.getForEntity(API_BASE_URL + "users", User[].class);
 		List<User> users = Arrays.asList(responseEntity.getBody());
@@ -134,8 +142,24 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		printUsers(users);
 		int userId = console.getUserInputInteger("Please select an user");
 		double money = Double.parseDouble((String)console.getUserInput("How much money would you like to send"));
+		
+		Transfer transfer = apiCall.getForObject(API_BASE_URL + "transfers/" + user.getId(), Transfer.class);
+		
+		
 		// TODO implement try - catch
 		
+		
+	}
+	
+	private Transfer initTransfer(long toId, long fromId, double amount) {
+		Transfer transfer = new Transfer();
+		transfer.setAccountFrom((int)fromId);
+		transfer.setAccountTo((int)toId);
+		transfer.setAmount(amount);
+		transfer.setTransferId(5);
+		transfer.setTransferStatusId(2);
+		transfer.setTransferTypeId(2);
+		return transfer;
 	}
 
 	private void requestBucks() {
@@ -150,6 +174,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				System.out.println(aTransfer);
 			}
 		}
+		
+		
 	}
 	
 	private void printUsers(List<User> users) {

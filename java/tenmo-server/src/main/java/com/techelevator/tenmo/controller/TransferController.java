@@ -66,11 +66,13 @@ public class TransferController {
     }
     
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "transfers", method = RequestMethod.POST)
+    @RequestMapping(value = "transfers", consumes = "application/json", method = RequestMethod.POST)
     public Transfer createTransfer(@RequestBody Transfer transfer) {
     	logAPICall("Sending $" + transfer.getAmount() + 
 			" from " + transfer.getAccountFrom() + " to " + transfer.getAccountTo());
-    	return transfer;
+    	Transfer transfers =  transferDAO.createTransfer(transfer);
+    	updateAccountBalance(transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+    	return transfers;
     }
     
     public void logAPICall(String message) {
@@ -81,7 +83,11 @@ public class TransferController {
     }
     
     
+    @RequestMapping(method = RequestMethod.PUT)
     private void updateAccountBalance(int accountFrom, int accountTo, double amount) {
-    	
+    	accountDAO.addBalance(accountTo, amount);
+    	accountDAO.subtractBalance(accountFrom, amount);
     }
+    
+    
 }
