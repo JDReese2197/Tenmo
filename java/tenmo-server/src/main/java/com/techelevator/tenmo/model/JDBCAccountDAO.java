@@ -52,7 +52,7 @@ public class JDBCAccountDAO  implements AccountDAO {
 	
 	@Override
 	public Account getAccountById(int id) {
-		String query = "SELECT * FROM account WHERE account_id = ?";
+		String query = "SELECT * FROM accounts WHERE account_id = ?";
 		
 		SqlRowSet results = jdbcTemplate.queryForRowSet(query, id);
 		if(results.next()) {
@@ -64,23 +64,33 @@ public class JDBCAccountDAO  implements AccountDAO {
 
 
 	@Override
-	public double addBalance(int id, double amount) {
-		// TODO Auto-generated method stub
-		return 0;
+	public double addBalance(long id, double amount) {
+		String query = "UPDATE accounts SET balance = (balance + ?) WHERE user_id = ?";
+		jdbcTemplate.update(query, amount, id);
+		return getAccountBalance((int)id);
 	}
 
 
 	@Override
-	public double subtractBalance(int id, double amount) {
-		// TODO Auto-generated method stub
-		return 0;
+	public double subtractBalance(long id, double amount) {
+		if(checkValidTransfer((int)id, amount)) {
+			String query = "UPDATE accounts SET balance = (balance - ?) WHERE user_id = ?";
+			jdbcTemplate.update(query, amount, id);
+		}
+		else {
+			System.out.println("Transaction could not be completed: Not enough money in account");
+			System.out.println("Get a Job.");
+		}
+		return getAccountBalance((int)id);
 	}
 
 
 	@Override
-	public boolean checkValidTransfer() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean checkValidTransfer(long id, double amount) {
+		if(amount > getAccountBalance((int)id)) {
+			return false;
+		}
+		return true;
 	}
 	
 	private Account mapRowToAccount(SqlRowSet result) {

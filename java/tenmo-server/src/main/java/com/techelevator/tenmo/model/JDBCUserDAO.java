@@ -30,19 +30,9 @@ public class JDBCUserDAO implements UserDAO {
 		return users;
 	}
 	
-	
-
-	private User mapRowToUser(SqlRowSet results) {
-		User user = new User();
-		user.setId(results.getLong("user_id"));
-		user.setUsername(results.getNString("username"));
-		user.setPassword(results.getNString("password_hash"));
-		return user;
-	}
-
 	@Override
 	public User getUserById(Long id) {
-		String query = "SELECT user_id, username FROM users WHERE user_id = ?";
+		String query = "SELECT * FROM users WHERE user_id = ?";
 		
 		SqlRowSet results = jdbcTemplate.queryForRowSet(query, id);
 		if(results.next()) {
@@ -54,7 +44,7 @@ public class JDBCUserDAO implements UserDAO {
 
 	@Override
 	public User getUserByUsername(String username) {
-		String query = "SELECT user_id, username FROM users WHERE username = ?";
+		String query = "SELECT * FROM users WHERE username = ?";
 		
 		SqlRowSet results = jdbcTemplate.queryForRowSet(query, username);
 		if(results.next()) {
@@ -62,5 +52,13 @@ public class JDBCUserDAO implements UserDAO {
 		}
 		System.out.println("No user exists by the name of " + username);
 		return null;
+	}
+
+	private User mapRowToUser(SqlRowSet results) {
+		User user = new User();
+		user.setId(results.getLong("user_id"));
+		user.setUsername(results.getString("username"));
+		user.setPassword(results.getString("password_hash"));
+		return user;
 	}
 }

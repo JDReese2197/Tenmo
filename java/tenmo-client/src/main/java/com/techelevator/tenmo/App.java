@@ -131,8 +131,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		ResponseEntity<User[]> responseEntity = apiCall.getForEntity(API_BASE_URL + "users", User[].class);
 		List<User> users = Arrays.asList(responseEntity.getBody());
 		
-		System.out.println("Please select an user from the list below: ");
 		printUsers(users);
+		int userId = console.getUserInputInteger("Please select an user");
+		double money = Double.parseDouble((String)console.getUserInput("How much money would you like to send"));
+		// TODO implement try - catch
+		
 	}
 
 	private void requestBucks() {
@@ -151,10 +154,18 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	
 	private void printUsers(List<User> users) {
 		if(users.size() > 0) {
+			System.out.println("Printing out all registered users.");
 			for(User anUser : users) {
-				System.out.println(users.indexOf(anUser) + ") " + anUser);
+				System.out.println("ID: " + anUser.getId() + " - " + anUser.toString());
 			}
 		}
+		else {
+			System.out.println("No users found");
+		}
+	}
+	
+	private void handleTransfer(int id, int toId, double amount) {
+		
 	}
 	
 	private void exitProgram() {

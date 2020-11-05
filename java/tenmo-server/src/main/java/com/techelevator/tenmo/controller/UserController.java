@@ -16,7 +16,7 @@ import com.techelevator.tenmo.model.JDBCUserDAO;
 import com.techelevator.tenmo.model.User;
 
 @RestController
-@RequestMapping(value = "users")
+//@RequestMapping(value = "users")
 public class UserController {
 	
 private JDBCUserDAO userDao;
@@ -25,17 +25,19 @@ private JDBCUserDAO userDao;
 		this.userDao = dao;
 	}
 	
-	@RequestMapping(value = "", method = RequestMethod.GET)
+	@RequestMapping(value = "users", method = RequestMethod.GET)
 	public List<User> getAllUsers() {
 		logAPICall("Getting all users");
 		List<User> users = userDao.getAllUsers();
 		return users;
 	}
 	
-	@RequestMapping(value = "{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public User getUserById(@PathVariable Long id) {
 		logAPICall("Getting users by id of: " + id);
-		return userDao.getUserById(id);
+		User user = userDao.getUserById(id);
+		user.setPassword(null);
+		return user;
 	}
 	
 	private void logAPICall(String message) {

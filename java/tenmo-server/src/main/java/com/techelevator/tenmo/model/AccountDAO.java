@@ -12,13 +12,13 @@ public interface AccountDAO {
 	
 	public Account getAccountById(int id);
 	
-	public double addBalance(int id, double amount);
+	public double addBalance(long id, double amount);
 		
-	public double subtractBalance(int id, double amount);
+	public double subtractBalance(long id, double amount);
 
 	public Account getAccountByUserId(long id);
 	
-	public boolean checkValidTransfer();
+	public boolean checkValidTransfer(long id, double amount);
 
 	public List<Account> getAllAccounts();
 }

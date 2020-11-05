@@ -99,4 +99,12 @@ public class JDBCTransferDAO implements TransferDAO {
 		}
 		return transfers;
 	}
+	
+	public Transfer createTransfer(Transfer transfer) {
+		String query = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount)"
+					+  " VALUES (?, ?, ?, ?, ?)";
+		jdbcTemplate.update(query, transfer.getTransferTypeId(), transfer.getTransferStatusId(), 
+				transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+		return transfer;
+	}
 }
