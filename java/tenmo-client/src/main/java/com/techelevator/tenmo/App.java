@@ -176,14 +176,15 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void requestBucks() {
 		User user = currentUser.getUser();
-		// TODO Auto-generated method stub
+		
+		
 		
 	}
 	
 	private void printTransfers(List<Transfer> transfers) {
 		if(transfers.size() > 0) {
 			for(Transfer aTransfer : transfers) {
-				System.out.println(aTransfer);
+				System.out.print(aTransfer.toString());
 			}
 		}
 		

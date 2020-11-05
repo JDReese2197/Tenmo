@@ -64,8 +64,36 @@ public class Transfer {
 		this.amount = amount;
 	}
 	
-	public void newTransfer() {
+	@Override
+	public String toString() {
 		
+		String typeString = "";
+		
+		switch(transferTypeId) {
+		
+		case 1:
+			typeString = "Request";
+			break;
+		case 2:
+			typeString = "Send";
+			break;
+		}
+		
+		String s = "";
+		
+		switch(transferStatusId) {
+		case 1:
+			s = "Pending";
+			break;
+		case 2:
+			s = "Approved";
+			break;
+		case 3:
+			s = "Rejected";
+			break;
+		}
+		
+		return "Transfer id: " + transferId + "\n Transfer Type: " + typeString + "\n Transfer Status id:" + s + "\n account from: "  + accountFrom + "\n account to: " + accountTo + "\n amount: " + amount;
 	}
 	
 	
