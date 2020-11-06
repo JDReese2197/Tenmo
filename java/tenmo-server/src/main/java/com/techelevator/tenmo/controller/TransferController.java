@@ -100,7 +100,8 @@ public class TransferController {
     	}
     }
     
-    
-    
-    
+    @RequestMapping(value = "transfers/status/{statusId}/", method = RequestMethod.PUT)
+    public void updateTransferStatus(@PathVariable int statusId, @RequestParam(value = "transId") int transId) {
+    	transferDAO.updateTransferStatus(transId, statusId);
+    }
 }

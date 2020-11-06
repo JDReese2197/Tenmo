@@ -142,4 +142,9 @@ public class JDBCTransferDAO implements TransferDAO {
 				transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
 		return transfer;
 	}
+	
+	public void updateTransferStatus(int transId, int statusId) {
+		String query = "UPDATE transfers SET transfer_status_id = ? WHERE transfer_id = ?";
+		jdbcTemplate.update(query, statusId, transId);
+	}
 }
