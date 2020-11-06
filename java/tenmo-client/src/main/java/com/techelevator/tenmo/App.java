@@ -197,7 +197,39 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void requestBucks() {
 		User user = currentUser.getUser();
+		// Get a list of users
+		ResponseEntity<User[]> responseEntity = apiCall.getForEntity(API_BASE_URL + "users", User[].class);
+		List<User> users = Arrays.asList(responseEntity.getBody());
 		
+		// Get the user id
+		int userId = requestUserId(users);
+		// Exit method if user enters 0
+		if(userId == 0) {
+			System.out.println("Exiting User Selection");
+			return;
+		}
+		
+		double money = requestMoneyToSend();
+		
+		// Make the entity
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		
+		// Create a transfer object to pass through the entity used in the API call
+		Transfer entityTransfer = new Transfer();
+		
+		if(money > apiCall.getForObject(API_BASE_URL + "accounts/" + user.getId(), Account.class).getBalance()) {
+			System.out.println("Money was greater than balance.  Send a lower amount next time?");
+			// Create the transfer and set status to rejected since the user is poor
+			entityTransfer = initTransfer(user.getId(), userId, money, 3, 1);
+		}
+		else {
+			// Create the transfer and set status to accepted since the user has enough money
+			entityTransfer = initTransfer(user.getId(), userId, money, 1, 1);
+		}
+		
+		HttpEntity anEntity = new HttpEntity(entityTransfer, headers);
+		Transfer transfer = apiCall.postForObject(API_BASE_URL + "transfers", anEntity, Transfer.class);
 		
 		
 	}

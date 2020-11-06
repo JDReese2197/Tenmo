@@ -72,13 +72,13 @@ public class JDBCTransferDAO implements TransferDAO {
    	 * Method to send a transfer
    	 *********************************************/
 
-	@Override
+	/*@Override
 	public void sendTransfer(Transfer newTransfer) {
 		
 		String sqlCreateTransfer = "INSERT INTO transfers (name) VALUES (?) RETURNING transfer_id";
 		Long id = jdbcTemplate.queryForObject(sqlCreateTransfer, Long.class, Transfer.getTransferId());
 		
-	}
+	}*/
 	
 	/*********************************************
    	 * Method to get all transfers by account id
