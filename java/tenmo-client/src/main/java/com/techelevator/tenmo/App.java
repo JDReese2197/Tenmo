@@ -127,10 +127,25 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		System.out.println("Transaction History: ");
 		printTransfers(currentTransfers);
 	}
+	
+	/*********************************************
+   	 * Method to view pending request 
+   	 *********************************************/
 
 	private void viewPendingRequests() {
+		// To do, return only pending request
 		User user = currentUser.getUser();
-		// TODO Auto-generated method stub
+		Account account = new Account();
+		System.out.println("View Pending Request");
+		
+		account = apiCall.getForObject(API_BASE_URL + "accounts/" + user.getId(), Account.class);
+		int accountId = account.getAccountId();
+		
+		ResponseEntity<Transfer[]> responseEntity = apiCall.getForEntity(API_BASE_URL + "transfers/accounts/" + accountId, Transfer[].class);
+		List<Transfer> pendingTransfers = Arrays.asList(responseEntity.getBody());
+		
+		System.out.println("Pending Request: ");
+		printTransfers(pendingTransfers);
 		
 	}
 	
