@@ -14,9 +14,18 @@ public class JDBCTransferDAO implements TransferDAO {
 
 	private JdbcTemplate jdbcTemplate;
 	
+	/*********************************************
+   	 * Constructor
+   	 *********************************************/
+	
 	public JDBCTransferDAO(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
+	
+	/*********************************************
+   	 * Method to get all transfers 
+   	 * returns a list
+   	 *********************************************/
 	
 	@Override
 	public List<Transfer> getAllTransfers() {
@@ -30,6 +39,11 @@ public class JDBCTransferDAO implements TransferDAO {
 		}
 		return transfers;
 	}
+	
+	/*********************************************
+   	 * Method to get all transfers by id
+   	 * returns a list
+   	 *********************************************/
 
 	@Override
 	public Transfer getTransferById(int id) {
@@ -53,6 +67,10 @@ public class JDBCTransferDAO implements TransferDAO {
 		transfer.setTransferTypeId(results.getInt("transfer_type_id"));
 		return transfer;
 	}
+	
+	/*********************************************
+   	 * Method to send a transfer
+   	 *********************************************/
 
 	@Override
 	public void sendTransfer(Transfer newTransfer) {
@@ -61,6 +79,10 @@ public class JDBCTransferDAO implements TransferDAO {
 		Long id = jdbcTemplate.queryForObject(sqlCreateTransfer, Long.class, Transfer.getTransferId());
 		
 	}
+	
+	/*********************************************
+   	 * Method to get all transfers by account id
+   	 *********************************************/
 	
 	@Override
 	public List<Transfer> getAllTransfersByAccountId(int id) {
@@ -75,6 +97,10 @@ public class JDBCTransferDAO implements TransferDAO {
 		return transfers;
 	}
 	
+	/*********************************************
+   	 * Method to get all transfers from an account id
+   	 *********************************************/
+	
 	@Override
 	public List<Transfer> getTransfersByFromId(int id) {
 		List<Transfer> transfers = new ArrayList<>();
@@ -88,6 +114,10 @@ public class JDBCTransferDAO implements TransferDAO {
 		return transfers;
 	}
 	
+	/*********************************************
+   	 * Method to get all transfers to an account id
+   	 *********************************************/
+	
 	@Override
 	public List<Transfer> getTransfersByToId(int id) {
 		List<Transfer> transfers = new ArrayList<>();
@@ -100,6 +130,10 @@ public class JDBCTransferDAO implements TransferDAO {
 		}
 		return transfers;
 	}
+	
+	/*********************************************
+   	 * Method to create a transfer
+   	 *********************************************/
 	
 	public Transfer createTransfer(Transfer transfer) {
 		String query = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount)"

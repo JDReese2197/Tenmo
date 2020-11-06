@@ -178,7 +178,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 	
 	/*********************************************
-   	 * Mehtod to initalize a transfer
+   	 * Method to initialize a transfer
    	 *********************************************/
 	
 	private Transfer initTransfer(long toId, long fromId, double amount, int status, int type) {
@@ -224,6 +224,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
    	 * Method to request an amount of money to be sent from user
    	 * will repeat until user enters a positive value
    	 *********************************************/
+	
 	private double requestMoneyToSend() {
 		double money = Double.parseDouble((String)console.getUserInput("How much money would you like to send"));
 		
@@ -264,9 +265,31 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 	}
 	
+	/*********************************************
+   	 * Graceful exit
+   	 *********************************************/
+	
 	private void exitProgram() {
+		
+		System.out.print("Exiting");
+		for (int i = 0; i < 3; i++) {
+			
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			System.out.print(".");
+			
+		}
+		System.out.println("\n***************************");
+		System.out.println("* Thanks for using TEnmo! *");
+		System.out.println("***************************");
 		System.exit(0);
 	}
+
 
 	
 	/*********************************************
