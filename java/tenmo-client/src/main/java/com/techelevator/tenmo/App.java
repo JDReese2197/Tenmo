@@ -37,13 +37,16 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private static final String MAIN_MENU_OPTION_REQUEST_BUCKS = "Request TE bucks";
 	private static final String MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS = "View your pending requests";
 	private static final String MAIN_MENU_OPTION_LOGIN = "Login as different user";
-	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_VIEW_BALANCE, MAIN_MENU_OPTION_SEND_BUCKS, MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS, MAIN_MENU_OPTION_REQUEST_BUCKS, MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS, MAIN_MENU_OPTION_LOGIN, MENU_OPTION_EXIT };
+	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_VIEW_BALANCE, MAIN_MENU_OPTION_SEND_BUCKS, MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS, MAIN_MENU_OPTION_REQUEST_BUCKS, MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS, MAIN_MENU_OPTION_LOGIN, MENU_OPTION_EXIT};
 	
     private AuthenticatedUser currentUser;
     private ConsoleService console;
     private AuthenticationService authenticationService;
     private Account account;
+    private Transfer aTransfer;
 	private RestTemplate apiCall = new RestTemplate();
+	
+	public double money;
     
     
 
@@ -145,9 +148,39 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		List<Transfer> pendingTransfers = Arrays.asList(responseEntity.getBody());
 		
 		System.out.println("Pending Request: ");
-		printTransfers(pendingTransfers);
+		printTransfersByStatus(pendingTransfers, 1);
+		
+		int transferId = requestTransferId(pendingTransfers);
+		
+		// how can we call the sendBucks method here to send the amount requested
+		
+		
 		
 	}
+	
+	/*********************************************
+   	 * Method to send money after a request is accepted
+   	 * make sure the user id is valid
+   	 * make sure the amt is valid
+   	 *********************************************/
+
+	/*private void sendBucksFromAcceptedRequest(int transferId) {
+		// Here we need to somehow get the amount of money from the request
+		User user = currentUser.getUser();
+
+		ResponseEntity<User[]> responseEntity = apiCall.getForEntity(API_BASE_URL + "users", User[].class);
+		List<User> users = Arrays.asList(responseEntity.getBody());
+		
+		// Prompt user for user to transfer money to and return result
+		int userId = requestUserId(users);
+		// Exit method if user enters 0
+		if(userId == 0) {
+			System.out.println("Exiting User Selection");
+			return;
+		}
+		
+		
+	}*/
 	
 	/*********************************************
    	 * Method to send money
@@ -170,7 +203,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 		
 		// Prompt user for money to be transfered and return result
-		double money = requestMoneyToSend();
+		money = requestMoneyToSend();
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -249,6 +282,18 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 	}
 	
+	private int requestTransferId(List<Transfer> pendingTransfers) {
+		// Print a list of users and ask the user to select one
+		printTransfersByStatus(pendingTransfers, 1);
+		int transferId = console.getUserInputInteger("Enter the transfer id of the request you want to approve: ");
+		// if the user picked a valid account let them transfer the money
+		while (transferId < 0 || transferId > pendingTransfers.size()) {
+			System.out.println("The id entered wasn't valid try again");
+			transferId = console.getUserInputInteger("Please select a Transfer Id from above or 0 to exit");
+		}
+		return transferId;
+	}
+	
 	/*********************************************
    	 * Method to request an exist ID from a list of users
    	 * Prompts for user input
@@ -292,6 +337,22 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				System.out.print(aTransfer.toString());
 			}
 		}
+		
+		
+	}
+	
+	/*********************************************
+   	 * Method to print transfers that are currently pending
+   	 *********************************************/
+	
+	private void printTransfersByStatus(List<Transfer> transfers, int a) {
+		
+		for(Transfer aTransfer : transfers) {
+			if (aTransfer.getTransferStatusId() == a) {
+				System.out.print(aTransfer.toString());
+			}
+		}
+		
 		
 		
 	}
