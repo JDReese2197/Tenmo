@@ -10,6 +10,7 @@ import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.tenmo.services.BrokeUserException;
 import com.techelevator.view.ConsoleService;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -105,7 +106,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		Account accounts = apiCall.getForObject(API_BASE_URL + "accounts/" + user.getId(), Account.class);
 		// ResponseEntity<Account> responseEntity = apiCall.getForEntity(API_BASE_URL + "accounts", Account.class);
 		// double currentBalance =  (responseEntity.getBody().getBalance());
-		System.out.println(accounts);
+		// Money formatted Correctly
+		double balance = accounts.getBalance();
+		NumberFormat formatter = NumberFormat.getCurrencyInstance();
+		System.out.println("Your current account balance is: " + formatter.format(balance));
 		
 		
 	}
@@ -158,29 +162,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 	}
 	
-	/*********************************************
-   	 * Method to send money after a request is accepted
-   	 * make sure the user id is valid
-   	 * make sure the amt is valid
-   	 *********************************************/
-
-	/*private void sendBucksFromAcceptedRequest(int transferId) {
-		// Here we need to somehow get the amount of money from the request
-		User user = currentUser.getUser();
-
-		ResponseEntity<User[]> responseEntity = apiCall.getForEntity(API_BASE_URL + "users", User[].class);
-		List<User> users = Arrays.asList(responseEntity.getBody());
-		
-		// Prompt user for user to transfer money to and return result
-		int userId = requestUserId(users);
-		// Exit method if user enters 0
-		if(userId == 0) {
-			System.out.println("Exiting User Selection");
-			return;
-		}
-		
-		
-	}*/
+	
 	
 	/*********************************************
    	 * Method to send money
@@ -203,7 +185,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 		
 		// Prompt user for money to be transfered and return result
-		money = requestMoneyToSend();
+		money = requestMoneyToSend(userId);
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -257,7 +239,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			return;
 		}
 		
-		double money = requestMoneyToSend();
+		double money = requestMoneyToSend(userId);
 		
 		// Make the entity
 		HttpHeaders headers = new HttpHeaders();
@@ -303,7 +285,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private int requestUserId(List<User> users) {
 		// Print a list of users and ask the user to select one
 		printUsers(users);
-		int userId = console.getUserInputInteger("Please select an user or 0 to exit");
+		int userId = console.getUserInputInteger("Please select an user ID or 0 to exit");
 		// if the user picked a valid account let them transfer the money
 		while (userId < 0 || userId > users.size()) {
 			System.out.println("The id entered wasn't valid try again");
@@ -317,12 +299,13 @@ private static final String API_BASE_URL = "http://localhost:8080/";
    	 * will repeat until user enters a positive value
    	 *********************************************/
 	
-	private double requestMoneyToSend() {
-		double money = Double.parseDouble((String)console.getUserInput("How much money would you like to send"));
+	private double requestMoneyToSend(int userId) {
+		
+		double money = Double.parseDouble((String)console.getUserInput("How much money would you like to send to User #" + userId));
 		
 		while (money <= 0) {
 			System.out.println("Do not enter a negetive amount of money to transfer!");
-			money = Double.parseDouble((String)console.getUserInput("How much money would you like to send"));
+			money = Double.parseDouble((String)console.getUserInput("How much money would you like to send to User #" + userId));
 		}
 		return money;
 	}
@@ -362,11 +345,16 @@ private static final String API_BASE_URL = "http://localhost:8080/";
    	 *********************************************/
 	
 	private void printUsers(List<User> users) {
+		System.out.println("-------------------------------------------");
+		System.out.println("Users");
+		System.out.println("Id - Name");
+		System.out.println("-------------------------------------------");
 		if(users.size() > 0) {
 			System.out.println("Printing out all registered users.");
 			for(User anUser : users) {
-				System.out.println("ID: " + anUser.getId() + " - " + anUser.toString());
+				System.out.println(anUser.getId() + " - " + anUser.toString());
 			}
+			System.out.println("-------------------------------------------");
 		}
 		else {
 			System.out.println("No users found");

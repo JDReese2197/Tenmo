@@ -1,5 +1,7 @@
 package com.techelevator.tenmo.model;
 
+import java.text.NumberFormat;
+
 public class Transfer {
 	private int transferId;
 	private int transferTypeId;
@@ -93,7 +95,10 @@ public class Transfer {
 			break;
 		}
 		
-		return "___________________________________________________\nTransfer id: " + transferId + "\n Transfer Type: " + typeString + "\n Transfer Status id:" + s + "\n account from: "  + accountFrom + "\n account to: " + accountTo + "\n amount: " + amount;
+		NumberFormat formatter = NumberFormat.getCurrencyInstance();
+		
+		
+		return "___________________________________________________\nTransfer id: " + transferId + "\n Transfer Type: " + typeString + "\n Transfer Status id:" + s + "\n account from: "  + accountFrom + "\n account to: " + accountTo + "\n amount: " + formatter.format(amount);
 	}
 	
 	

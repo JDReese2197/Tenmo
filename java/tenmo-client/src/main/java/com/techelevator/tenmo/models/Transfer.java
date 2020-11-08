@@ -1,5 +1,7 @@
 package com.techelevator.tenmo.models;
 
+import java.text.NumberFormat;
+
 public class Transfer {
 	private int transferId;
 	private int transferTypeId;
@@ -92,8 +94,9 @@ public class Transfer {
 			s = "Rejected";
 			break;
 		}
+		NumberFormat formatter = NumberFormat.getCurrencyInstance();
 		
-		return "___________________________________________________\nTransfer id: " + transferId + "\nTransfer Type: " + typeString + "\nTransfer Status id: " + s + "\nAccount from: "  + accountFrom + "\nAccount to: " + accountTo + "\nAmount: " + amount + "\n___________________________________________________\n";
+		return "___________________________________________________\nTransfers\n___________________________________________________\nTransfer id: " + transferId + "\nTransfer Type: " + typeString + "\nTransfer Status id: " + s + "\nAccount from: "  + accountFrom + "\nAccount to: " + accountTo + "\nAmount: " + formatter.format(amount) + "\n___________________________________________________\n";
 	}
 	
 	
