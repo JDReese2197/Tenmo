@@ -96,7 +96,7 @@ public class Transfer {
 		}
 		NumberFormat formatter = NumberFormat.getCurrencyInstance();
 		
-		return "___________________________________________________\nTransfers\n___________________________________________________\nTransfer id: " + transferId + "\nTransfer Type: " + typeString + "\nTransfer Status id: " + s + "\nAccount from: "  + accountFrom + "\nAccount to: " + accountTo + "\nAmount: " + formatter.format(amount) + "\n___________________________________________________\n";
+		return "\n___________________________________________________\nTransfer id: " + transferId + "\nTransfer Type: " + typeString + "\nTransfer Status id: " + s + "\nAccount from: "  + accountFrom + "\nAccount to: " + accountTo + "\nAmount: " + formatter.format(amount) + "\n___________________________________________________\n";
 	}
 	
 	

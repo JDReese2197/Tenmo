@@ -158,7 +158,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 		// how can we call the sendBucks method here to send the amount requested
 		
-		
+		approveRejectOrNone();
 		
 	}
 	
@@ -239,7 +239,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			return;
 		}
 		
-		double money = requestMoneyToSend(userId);
+		double money = requestMoneyToRequest(userId);
 		
 		// Make the entity
 		HttpHeaders headers = new HttpHeaders();
@@ -263,17 +263,31 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 		
 	}
+	/*********************************************
+   	 * Method to request Transfer Id 
+   	 *********************************************/
 	
 	private int requestTransferId(List<Transfer> pendingTransfers) {
-		// Print a list of users and ask the user to select one
-		printTransfersByStatus(pendingTransfers, 1);
-		int transferId = console.getUserInputInteger("Enter the transfer id of the request you want to approve: ");
+		int transferId = console.getUserInputInteger("Please enter transfer number to approve/reject (0 to cancel)");
 		// if the user picked a valid account let them transfer the money
 		while (transferId < 0 || transferId > pendingTransfers.size()) {
 			System.out.println("The id entered wasn't valid try again");
-			transferId = console.getUserInputInteger("Please select a Transfer Id from above or 0 to exit");
+			transferId = console.getUserInputInteger("Please enter transfer number to approve/reject (0 to cancel)");
 		}
 		return transferId;
+	}
+	
+	/*********************************************
+   	 * Method to approve Reject or Don't approve or reject
+   	 *********************************************/
+	
+	private int approveRejectOrNone() {
+		String[] options = {"Don't Approve or Reject", "Approve", "Reject"};
+		for (int i = 0; i < 3; i++) {
+			System.out.println(i + ": " + options[i]);
+		}
+		int transChoose = console.getUserInputInteger("Please Choose an option");
+		return transChoose;
 	}
 	
 	/*********************************************
@@ -285,7 +299,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private int requestUserId(List<User> users) {
 		// Print a list of users and ask the user to select one
 		printUsers(users);
-		int userId = console.getUserInputInteger("Please select an user ID or 0 to exit");
+		int userId = console.getUserInputInteger("Enter ID of user you are requesting from (0 to cancel)");
 		// if the user picked a valid account let them transfer the money
 		while (userId < 0 || userId > users.size()) {
 			System.out.println("The id entered wasn't valid try again");
@@ -311,10 +325,28 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 	
 	/*********************************************
+   	 * Method to request an amount of money to be sent from user
+   	 * will repeat until user enters a positive value
+   	 *********************************************/
+	
+	private double requestMoneyToRequest(int userId) {
+		
+		double money = Double.parseDouble((String)console.getUserInput("How much money would you like to request From User #" + userId));
+		
+		while (money <= 0) {
+			System.out.println("Do not enter a negetive amount of money to transfer!");
+			money = Double.parseDouble((String)console.getUserInput("How much money would you like to request From User #" + userId));
+		}
+		return money;
+	}
+	
+	/*********************************************
    	 * Method to print transfers in a readable format
    	 *********************************************/
 	
 	private void printTransfers(List<Transfer> transfers) {
+		System.out.println("___________________________________________________");
+		System.out.println("Transfers");
 		if(transfers.size() > 0) {
 			for(Transfer aTransfer : transfers) {
 				System.out.print(aTransfer.toString());
@@ -329,12 +361,17 @@ private static final String API_BASE_URL = "http://localhost:8080/";
    	 *********************************************/
 	
 	private void printTransfersByStatus(List<Transfer> transfers, int a) {
-		
+		System.out.println("___________________________________________________");
+		System.out.println("Transfers");
+		int i = 0;
 		for(Transfer aTransfer : transfers) {
 			if (aTransfer.getTransferStatusId() == a) {
+				i++;
 				System.out.print(aTransfer.toString());
+				System.out.println("Transfer Number: " + i);
 			}
 		}
+		
 		
 		
 		
