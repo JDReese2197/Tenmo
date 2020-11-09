@@ -155,10 +155,17 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		printTransfersByStatus(pendingTransfers, 1);
 		
 		int transferId = requestTransferId(pendingTransfers);
+	
+		ResponseEntity<User[]> responseEntitys = apiCall.getForEntity(API_BASE_URL + "users", User[].class);
+		List<User> users = Arrays.asList(responseEntitys.getBody());
+		
+		// Instead of asking for the user id get it automatically
+		// Prompt user for user to transfer money to and return result
+		int userId = (int)grabTransferID(pendingTransfers, 1, transferId);
 		
 		// how can we call the sendBucks method here to send the amount requested
 		
-		approveRejectOrNone();
+		approveRejectOrNone(userId);
 		
 	}
 	
@@ -171,6 +178,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
    	 *********************************************/
 
 	private void sendBucks() {
+
 		User user = currentUser.getUser();
 
 		ResponseEntity<User[]> responseEntity = apiCall.getForEntity(API_BASE_URL + "users", User[].class);
@@ -281,13 +289,39 @@ private static final String API_BASE_URL = "http://localhost:8080/";
    	 * Method to approve Reject or Don't approve or reject
    	 *********************************************/
 	
-	private int approveRejectOrNone() {
+	private void approveRejectOrNone(int userId) {
+		User user = currentUser.getUser();
+		
 		String[] options = {"Don't Approve or Reject", "Approve", "Reject"};
 		for (int i = 0; i < 3; i++) {
 			System.out.println(i + ": " + options[i]);
 		}
 		int transChoose = console.getUserInputInteger("Please Choose an option");
-		return transChoose;
+		int statusCode = 0;
+		if (transChoose == 0) {
+			statusCode = 1;
+		} else if (transChoose == 1) {
+			statusCode = 2;
+		} else if (transChoose == 3) {
+			statusCode = 3;
+		}
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		// Create a transfer object to pass through the entity used in the API call
+		Transfer entityTransfer = new Transfer();
+		
+		if(money > apiCall.getForObject(API_BASE_URL + "accounts/" + user.getId(), Account.class).getBalance()) {
+			System.out.println("Money was greater than balance.  Send a lower amount next time?");
+			// Create the transfer and set status to rejected since the user is poor
+			entityTransfer = initTransfer(userId, user.getId(), money, statusCode, 2);
+		}
+		else {
+			// Create the transfer and set status to accepted since the user has enough money
+			entityTransfer = initTransfer(userId, user.getId(), money, statusCode, 2);
+		}
+		
+		HttpEntity anEntity = new HttpEntity(entityTransfer, headers);
+		Transfer transfer = apiCall.postForObject(API_BASE_URL + "transfers", anEntity, Transfer.class);
 	}
 	
 	/*********************************************
@@ -322,6 +356,20 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			money = Double.parseDouble((String)console.getUserInput("How much money would you like to send to User #" + userId));
 		}
 		return money;
+	}
+	
+	/*********************************************
+   	 * Method to request an amount of money to be sent from user
+   	 * will repeat until user enters a positive value
+   	 *********************************************/
+	
+	private double getTransferAmount(List<Transfer> transfers) {
+		if(transfers.size() > 0) {
+			for(Transfer aTransfer : transfers) {
+				return aTransfer.getAmount();
+			}
+		}
+		return aTransfer.getAmount();
 	}
 	
 	/*********************************************
@@ -371,7 +419,25 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				System.out.println("Transfer Number: " + i);
 			}
 		}
+	}
 		
+	/*********************************************
+   	 * Method to print transfers that are currently pending
+   	 *********************************************/
+	
+	public double grabTransferID(List<Transfer> transfers, int a, int b) {
+		for(Transfer aTransfer : transfers) {
+			// Check to see if it's pending
+			if (aTransfer.getTransferStatusId() == a) {
+				// Check to see if it's the correct transfer
+				if (aTransfer.getTransferId() == b) {
+					return aTransfer.getAccountFrom();
+				}
+					
+			}
+		}
+		return aTransfer.getAccountFrom();
+	
 		
 		
 		
